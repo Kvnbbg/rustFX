@@ -174,6 +174,10 @@ and **UX polish**.
 
 ## Development
 
+**Toolchain & formatting**
+- This repo pins a minimal Rust toolchain via `rust-toolchain.toml`.
+- Standard formatting and linting are expected (`rustfmt`, `clippy`).
+
 ```bash
 # lint + test (planned)
 cargo fmt --all
