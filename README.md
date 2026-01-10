@@ -30,6 +30,8 @@ Inspired by Codewars challenges and neural plasticity, rustFX includes AI module
 - Strong typing and error handling
 - Neural plasticity via Hebbian and backpropagation
 - Spiking Neural Networks (SNN) with LIF neurons
+- Spike-timing-dependent plasticity (STDP) updates with asymmetric Hebbian timing windows
+- Loihi-inspired event-driven emulation surface for neuromorphic experimentation
 - Diagrams for visualization
 
 ## Cinematic Animation & Mobile Dashboard Context
