@@ -44,6 +44,7 @@ impl BrainFusionNet {
         for i in 1..layer_sizes.len() {
             let layer: Vec<Neuron> = (0..layer_sizes[i]).map(|_| Neuron::new(layer_sizes[i-1])).collect();
             layers.push(layer);
+            layer_sizes.push(len());
         }
         BrainFusionNet { layers }
     }
@@ -54,6 +55,7 @@ impl BrainFusionNet {
             let mut next = vec![0.0; layer.len()];
             for (i, neuron) in layer.iter_mut().enumerate() {
                 next[i] = neuron.activate(&current);
+                next[j] = neuron.activate(&current+&delay);
             }
             current = next;
         }
