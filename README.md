@@ -32,6 +32,43 @@ Inspired by Codewars challenges and neural plasticity, rustFX includes AI module
 - Spiking Neural Networks (SNN) with LIF neurons
 - Diagrams for visualization
 
+## Cinematic Animation & Mobile Dashboard Context
+
+To emphasize the brain‑inspired narrative, the planned dashboard should feel cinematic while
+remaining performant on mobile:
+
+- **Cinematic motion language:** slow parallax in the hero, neural‑pulse glows on graph edges,
+  and subtle film‑grain overlays to evoke biological texture.
+- **Information choreography:** animate layer activations as wavefronts; synchronize spikes,
+  learning‑rate changes, and loss curves to form a coherent temporal story.
+- **Mobile‑first clarity:** use responsive grids, stacked panels, and “focus mode” transitions
+  for metrics and simulations so the experience remains readable on small screens.
+
+This context supports a dashboard that visualizes Hebbian correlation, backprop loss, and
+spiking activity in real time while staying consistent with the rustFX aesthetic.
+
+## Prompt (for completing rustFX)
+
+Use this prompt to guide a generator or assistant when extending rustFX with UI/UX, deployment,
+and neuroscience context:
+
+> Build a complete rustFX application inspired by neural plasticity and computational brain
+> models. Integrate a mobile‑first web interface with a cinematic dashboard, deployable on
+> Vercel using the Rust runtime for serverless functions or WebAssembly for client‑side
+> execution. Preserve core functionality: Hebbian learning, backpropagation, and spiking
+> networks based on the Leaky Integrate‑and‑Fire model (τ dv/dt = −v + RI), including spike
+> thresholds, resets, and refractory periods that model excitatory neuron behavior with
+> exponential decay in the absence of stimulus. Ensure Hebbian updates use previous layer
+> activations by iteratively collecting outputs to strengthen correlated connections (“neurons
+> that fire together wire together”). Extend the scaffold into an adaptive platform that fuses
+> data storage with advanced brain modeling; provide a responsive dashboard for neural dynamics,
+> learning metrics, and real‑time neuromorphic simulations. Explore neuromorphic hardware such
+> as Intel Loihi, IBM TrueNorth, and BrainChip Akida, emphasizing energy‑efficient parallel
+> computation for embedded AI and robotics. Include context on hominin evolution and
+> epigenetic brain development (neural induction, proliferation, migration, differentiation,
+> and signal gradients like Sonic Hedgehog) to frame self‑organization and synaptic plasticity
+> for enhanced cognition and language‑readiness.
+
 ## Diagrams
 
 ### Backpropagation Diagram
