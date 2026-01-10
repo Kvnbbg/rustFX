@@ -1,12 +1,11 @@
-# rustFX
+# rustFX: AI Brain Fusion with Neural Plasticity in Rust
+
+[![AI Brain Fusion](https://www.frontiersin.org/files/Articles/1153985/fnins-17-1153985-HTML/image_m/fnins-17-1153985-g001.jpg)](https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2023.1153985/full)
+
+A modern Rust systems toolchain scaffold for storage-centric workflows, now fused with AI brain-inspired neural plasticity mechanisms. Aligned with upstream rustfs project, this repo evolves to integrate neural network simulations including Hebbian learning, backpropagation, and spiking neural networks for adaptive data processing.
 
 > A modern Rust systems toolchain scaffold for storage‑centric workflows, aligned with the upstream
 > [`rustfs`](https://github.com/rustfs/rustfs) project.
-
-**Status:** This repository currently tracks upstream and contains documentation only. It is the
-starting point for a future, production‑grade, async‑first Rust codebase. The guidance below
-documents the intended architecture, ergonomics, and implementation standards so the code and
-CLI can grow in a predictable, robust direction.
 
 ---
 
@@ -20,6 +19,47 @@ CLI can grow in a predictable, robust direction.
 **Target users**
 - Infrastructure engineers building storage tools.
 - Rust developers who want a well‑scaffolded, production‑grade foundation.
+
+## Purpose
+
+Inspired by Codewars challenges and neural plasticity, rustFX includes AI modules simulating neuron dynamics. The fusion blends storage with adaptive AI, for intelligent data handling.
+
+## Features
+
+- Async-first I/O for storage (planned)
+- Strong typing and error handling
+- Neural plasticity via Hebbian and backpropagation
+- Spiking Neural Networks (SNN) with LIF neurons
+- Diagrams for visualization
+
+## Diagrams
+
+### Backpropagation Diagram
+![Backpropagation in Neural Network](https://media.geeksforgeeks.org/wp-content/uploads/20240217152156/Frame-13.png)
+
+### Spiking Neural Network Architecture
+![Architecture of spiking neural network](https://www.researchgate.net/publication/358455366/figure/fig2/AS:1129739012063271@1646362178897/Architecture-of-spiking-neural-network.png)
+
+## Example Usage
+
+```rust
+use rustfx::BrainFusionNet;
+use rustfx::SpikingNet;
+
+fn main() {
+    // Backprop NN
+    let mut net = BrainFusionNet::new(&[2, 3, 1]);
+    let inputs = vec![0.5, 0.3];
+    let targets = vec![1.0];
+    net.backpropagate(&inputs, &targets, 0.01);
+
+    // SNN
+    let mut snn = SpikingNet::new(5);
+    let inputs = vec![0.1, 0.2, 0.0, 0.3, 0.1];
+    let spikes = snn.step(&inputs, 1.0);
+    println!("Spikes: {:?}", spikes);
+}
+```
 
 ---
 
@@ -195,6 +235,22 @@ cargo test --all
 
 ---
 
+## Architecture
+
+crates/rustfx-core: Core types for Neuron, BrainFusionNet, SpikingNet
+Planned: Neural-decided storage adapters
+
+---
+
+## Configuration
+Use rustfx.toml for settings like learning rates.
+Development
+
+Rust toolchain pinned
+Run tests: cargo test
+Build: cargo build
+
+Deploy on Vercel for docs. Contributions welcome! Expand on SNN features.
 ## License
 
 [MIT](LICENSE)
