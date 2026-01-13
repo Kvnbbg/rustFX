@@ -44,26 +44,32 @@ impl BrainFusionNet {
         for i in 1..layer_sizes.len() {
             let layer: Vec<Neuron> = (0..layer_sizes[i]).map(|_| Neuron::new(layer_sizes[i-1])).collect();
             layers.push(layer);
-            layer_sizes.push(len());
         }
         BrainFusionNet { layers }
     }
 
     pub fn forward(&mut self, inputs: &[f64]) -> Vec<f64> {
+        let activations = self.forward_with_cache(inputs);
+        activations.last().cloned().unwrap_or_default()
+    }
+
+    fn forward_with_cache(&mut self, inputs: &[f64]) -> Vec<Vec<f64>> {
         let mut current = inputs.to_vec();
+        let mut activations = Vec::with_capacity(self.layers.len());
         for layer in self.layers.iter_mut() {
-            let mut next = vec![0.0; layer.len()];
-            for (i, neuron) in layer.iter_mut().enumerate() {
-                next[i] = neuron.activate(&current);
-                next[j] = neuron.activate(&current+&delay);
+            let mut next = Vec::with_capacity(layer.len());
+            for neuron in layer.iter_mut() {
+                next.push(neuron.activate(&current));
             }
+            activations.push(next.clone());
             current = next;
         }
-        current
+        activations
     }
 
     pub fn backpropagate(&mut self, inputs: &[f64], targets: &[f64], learning_rate: f64) {
-        let outputs = self.forward(inputs);
+        let activations = self.forward_with_cache(inputs);
+        let outputs = activations.last().cloned().unwrap_or_default();
 
         // Output layer deltas
         let output_layer = self.layers.len() - 1;
@@ -81,25 +87,23 @@ impl BrainFusionNet {
         }
 
         // Update weights
-        let mut current = inputs.to_vec();
         for (l, layer) in self.layers.iter_mut().enumerate() {
-            let prev = if l == 0 { inputs } else { &self.layers[l-1].iter().map(|n| n.activation).collect::<Vec<_>>() };
+            let prev = if l == 0 { inputs } else { &activations[l-1] };
             for neuron in layer.iter_mut() {
                 for (w, &input) in neuron.weights.iter_mut().zip(prev.iter()) {
                     *w += learning_rate * neuron.delta * input;
                 }
                 neuron.bias += learning_rate * neuron.delta;
             }
-            current = layer.iter().map(|n| n.activation).collect();
         }
     }
 
     pub fn train_hebbian(&mut self, inputs: &[f64], learning_rate: f64) {
-        self.forward(inputs);
-        for layer in self.layers.iter_mut() {
-            let prev = /* get previous activations */;
+        let activations = self.forward_with_cache(inputs);
+        for (l, layer) in self.layers.iter_mut().enumerate() {
+            let prev = if l == 0 { inputs } else { &activations[l-1] };
             for neuron in layer.iter_mut() {
-                neuron.hebbian_update(&prev, learning_rate);
+                neuron.hebbian_update(prev, learning_rate);
             }
         }
     }
