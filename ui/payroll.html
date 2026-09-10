@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>rustFX · Payroll Intelligence</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      th { color: var(--muted); font-weight: 500; font-size: 0.85rem; }
+      .form-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-top: 16px; }
+      input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(11,15,29,0.7); color: var(--text); }
+      .status { color: var(--accent-strong); min-height: 1.4em; margin-top: 8px; }
+      .highlight { color: var(--accent-warm); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div class="background-glow"></div>
+    <header class="shell">
+      <nav class="nav">
+        <div class="brand"><span class="brand__glyph">⚡</span> rustFX</div>
+        <div class="nav__links">
+          <a href="index.html">Overview</a>
+          <a href="payroll.html">Payroll</a>
+          <a class="button button--ghost" href="/api/dashboard">JSON</a>
+        </div>
+      </nav>
+    </header>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero__content">
+          <span class="pill">sqlx · tokio · LeetCode 181</span>
+          <h1>Employees earning more than their managers.</h1>
+          <p>
+            The official self-join runs asynchronously against SQLite through sqlx.
+            Three independent reads are issued with <code>tokio::try_join!</code>
+            so the dashboard snapshot is assembled in one concurrent hop.
+          </p>
+        </div>
+        <div class="hero__panel">
+          <div class="panel">
+            <div class="panel__header">
+              <h2>Live Snapshot</h2>
+              <span class="badge" id="live-badge">Loading</span>
+            </div>
+            <div class="panel__grid">
+              <div class="metric"><span>Headcount</span><strong id="stat-headcount">—</strong></div>
+              <div class="metric"><span>Managers</span><strong id="stat-managers">—</strong></div>
+              <div class="metric"><span>Outliers</span><strong id="stat-outliers">—</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="margin-bottom: 32px;">
+        <h3>Compensation outliers</h3>
+        <p>Rows where employee salary is strictly greater than manager salary.</p>
+        <table>
+          <thead>
+            <tr><th>Employee</th><th>Salary</th><th>Manager</th><th>Manager salary</th><th>Delta</th></tr>
+          </thead>
+          <tbody id="outliers-body"></tbody>
+        </table>
+      </section>
+
+      <section class="card" style="margin-bottom: 32px;">
+        <h3>Roster</h3>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Salary</th><th>Manager</th></tr>
+          </thead>
+          <tbody id="roster-body"></tbody>
+        </table>
+      </section>
+
+      <section class="card" style="margin-bottom: 72px;">
+        <h3>Add employee</h3>
+        <p>POST /api/employees — async insert through the same pool.</p>
+        <form id="hire-form" class="form-grid">
+          <input name="name" placeholder="Name" required />
+          <input name="salary" type="number" placeholder="Salary" required />
+          <input name="manager_id" type="number" placeholder="Manager ID (optional)" />
+          <button class="button" type="submit">Insert row</button>
+        </form>
+        <p class="status" id="form-status"></p>
+      </section>
+    </main>
+    <script>
+      const money = (n) => Number(n).toLocaleString();
+
+      async function refresh() {
+        const res = await fetch("/api/dashboard");
+        if (!res.ok) throw new Error("dashboard request failed");
+        const data = await res.json();
+        document.getElementById("live-badge").textContent = "Live";
+        document.getElementById("stat-headcount").textContent = data.headcount;
+        document.getElementById("stat-managers").textContent = data.managers;
+        document.getElementById("stat-outliers").textContent = data.outlier_count;
+
+        document.getElementById("outliers-body").innerHTML = data.outliers
+          .map(
+            (row) => `<tr>
+              <td class="highlight">${row.employee}</td>
+              <td>${money(row.employee_salary)}</td>
+              <td>${row.manager}</td>
+              <td>${money(row.manager_salary)}</td>
+              <td>+${money(row.delta)}</td>
+            </tr>`
+          )
+          .join("") || `<tr><td colspan="5">No outliers</td></tr>`;
+
+        document.getElementById("roster-body").innerHTML = data.employees
+          .map(
+            (row) => `<tr>
+              <td>${row.id}</td>
+              <td>${row.name}</td>
+              <td>${money(row.salary)}</td>
+              <td>${row.manager_name ?? "—"}</td>
+            </tr>`
+          )
+          .join("");
+      }
+
+      document.getElementById("hire-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const payload = {
+          name: form.name.value,
+          salary: Number(form.salary.value),
+          manager_id: form.manager_id.value ? Number(form.manager_id.value) : null,
+        };
+        const status = document.getElementById("form-status");
+        const res = await fetch("/api/employees", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const body = await res.json();
+        status.textContent = res.ok ? `Inserted id ${body.id}` : body.error || "insert failed";
+        if (res.ok) {
+          form.reset();
+          await refresh();
+        }
+      });
+
+      refresh().catch((err) => {
+        document.getElementById("live-badge").textContent = "Offline";
+        document.getElementById("form-status").textContent =
+          "Start the server: cargo run -p rustfx-dashboard";
+        console.error(err);
+      });
+    </script>
+  </body>
+</html>
