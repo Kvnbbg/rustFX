@@ -33,23 +33,13 @@ fn print_help() {
 }
 
 fn print_status() {
-    println!("{{'
-        \"schemaVersion\":\"{CONTRACT}\",
-        \"engine\":\"rustfx-web3\",
-        \"repository\":\"https://github.com/Kvnbbg/rustFX\",
-        \"preferredCli\":\"laura\",
-        \"language\":\"rust\",
-        \"posture\":\"read-only-catalog\",
-        \"custody\":\"none\",
-        \"walletConnect\":false,
-        \"chains\":[\"robinhood-health\",\"evm-chainid-probe\"],
-        \"pilot\":\"github.com/Kvnbbg/Laura\"
-    }}".replace('\n', "").replace("    ", ""));
+    println!(
+        "{{\"schemaVersion\":\"{CONTRACT}\",\"engine\":\"rustfx-web3\",\"repository\":\"https://github.com/Kvnbbg/rustFX\",\"preferredCli\":\"laura\",\"language\":\"rust\",\"posture\":\"read-only-catalog\",\"custody\":\"none\",\"walletConnect\":false,\"chains\":[\"robinhood-health\",\"evm-chainid-probe\"],\"pilot\":\"github.com/Kvnbbg/Laura\"}}"
+    );
 }
 
 fn print_catalog() {
-    println!("{{\"schemaVersion\":\"{CONTRACT}\",\"coins\":[\
-        {{\"symbol\":\"ETH\",\"role\":\"gas-and-mark\",\"plane\":\"web3\"}},\
-        {{\"symbol\":\"RH-MARKETS\",\"role\":\"copy-universe\",\"plane\":\"copy\"}}\
-    ],\"note\":\"catalog only; COPY papers trades; Laura pilots\"}}");
+    println!(
+        "{{\"schemaVersion\":\"{CONTRACT}\",\"coins\":[{{\"symbol\":\"ETH\",\"role\":\"gas-and-mark\",\"plane\":\"web3\"}},{{\"symbol\":\"RH-MARKETS\",\"role\":\"copy-universe\",\"plane\":\"copy\"}}],\"note\":\"catalog only; COPY papers trades; Laura pilots\"}}"
+    );
 }
