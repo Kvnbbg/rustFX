@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/rustfx-dashboard"]
+members = ["crates/rustfx-dashboard", "crates/rustfx-web3"]
 
 [workspace.package]
 edition = "2021"
